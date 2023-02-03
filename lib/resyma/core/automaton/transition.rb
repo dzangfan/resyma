@@ -1,6 +1,9 @@
 module Resyma
   module Core
     class TransitionTable
+
+      attr_reader :table
+
       Candidate = Struct.new("Candidate", :condition, :destination)
 
       def initialize
@@ -37,6 +40,18 @@ module Resyma
           end
         end
         nil
+      end
+
+      #
+      # Candidate states that has a transition starting from `from_state`
+      #
+      # @param [Resyma::Core::State] from_state Starting state
+      #
+      # @return [Array<Resyma::Core::TransitionTable::Candidate>] A list of
+      #   candidates
+      #
+      def candidates(from_state)
+        @table[from_state]
       end
     end
   end
