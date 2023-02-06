@@ -44,11 +44,11 @@ module Resyma
         add_child! symbol, ast, true, [value]
       end
 
-      def self.root(symbol, value = nil, ast = nil, &block)
+      def self.root(symbol, value = nil, index = 0, ast = nil, &block)
         if block.nil?
-          ParseTreeBuilder.new(symbol, 0, true, [value], ast)
+          ParseTreeBuilder.new(symbol, index, true, [value], ast)
         else
-          ptb = ParseTreeBuilder.new(symbol, index = 0, is_leaf = false,
+          ptb = ParseTreeBuilder.new(symbol, index, is_leaf = false,
                                      children = [], ast = ast)
           ptb.instance_eval(&block) unless block.nil?
           ptb
