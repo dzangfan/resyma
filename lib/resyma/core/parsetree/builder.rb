@@ -2,11 +2,12 @@ module Resyma
   module Core
     class ParseTreeBuilder
       def initialize(symbol, index = 0, is_leaf = false,
-                     children = [])
+                     children = [], ast = nil)
         @symbol = symbol
         @children = children
         @index = index
         @is_leaf = is_leaf
+        @ast = ast
       end
 
       #
@@ -16,14 +17,15 @@ module Resyma
       #
       # @return [Resyma::Core::ParseTreeBuilder] Builder of the new child
       #
-      def add_child!(symbol, is_leaf = false, value = [])
-        ptb = ParseTreeBuilder.new(symbol, @children.length, is_leaf, value)
+      def add_child!(symbol, ast = nil, is_leaf = false, value = [])
+        ptb = ParseTreeBuilder.new(symbol, @children.length, is_leaf, value,
+                                   ast)
         @children.push ptb
         ptb
       end
 
       def build(parent = nil)
-        pt = ParseTree.new(@symbol, nil, parent, @index, @is_leaf)
+        pt = ParseTree.new(@symbol, nil, parent, @index, @is_leaf, @ast)
         pt.children = if @is_leaf
                         @children
                       else
@@ -32,21 +34,22 @@ module Resyma
         pt
       end
 
-      def node(symbol, &block)
-        ptb = add_child! symbol
+      def node(symbol, ast = nil, &block)
+        ptb = add_child! symbol, ast
         ptb.instance_eval(&block) unless block.nil?
         ptb
       end
 
-      def leaf(symbol, value)
-        add_child! symbol, true, [value]
+      def leaf(symbol, value, ast = nil)
+        add_child! symbol, ast, true, [value]
       end
 
-      def self.root(symbol, value = nil, &block)
+      def self.root(symbol, value = nil, ast = nil, &block)
         if block.nil?
-          ParseTreeBuilder.new(symbol, 0, true, [value])
+          ParseTreeBuilder.new(symbol, 0, true, [value], ast)
         else
-          ptb = ParseTreeBuilder.new(symbol)
+          ptb = ParseTreeBuilder.new(symbol, index = 0, is_leaf = false,
+                                     children = [], ast = ast)
           ptb.instance_eval(&block) unless block.nil?
           ptb
         end

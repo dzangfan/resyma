@@ -14,14 +14,14 @@ module Resyma
     class ParseTree
       attr_accessor :symbol, :children, :parent, :index, :field, :ast
 
-      def initialize(symbol, children, parent, index, is_leaf)
+      def initialize(symbol, children, parent, index, is_leaf, ast = nil)
         @symbol = symbol
         @children = children
         @parent = parent
         @index = index
         @field = Field.make_clean_field
         @is_leaf = is_leaf
-        @ast = nil
+        @ast = ast
       end
 
       def root?
