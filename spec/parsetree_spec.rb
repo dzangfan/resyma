@@ -1,8 +1,8 @@
 require "parser"
+require "parser/current"
 require "resyma/core/parsetree"
 
 RSpec.describe Resyma::Core::SourceLocator do
-
   def block_of(*_, &block)
     block
   end
@@ -16,14 +16,13 @@ RSpec.describe Resyma::Core::SourceLocator do
   end
 
   it "can locate AST of methods" do
-    ast = Resyma::Core.locate(method :block_of)
+    ast = Resyma::Core.locate(method(:block_of))
     expect(ast).to be_a Parser::AST::Node
     expect(ast.type).to be :def
   end
 end
 
 RSpec.describe Resyma::Core::ParseTreeBuilder do
-
   def check(node, symbol, children_amount, index, parent, is_leaf)
     expect(node).to be_a Resyma::Core::ParseTree
     expect(node.field).to eq Resyma::Core::Field.make_clean_field
@@ -58,5 +57,24 @@ RSpec.describe Resyma::Core::ParseTreeBuilder do
     check(t.children[2], :right, 1, 2, t, false)
     check(t.children[2].children[0], :number, 1, 0, t.children[2], true)
     expect(t.children[2].children[0].children).to eq [15]
+  end
+end
+
+RSpec.describe Resyma::Core::Converter do
+  cvt = Resyma::Core::Converter.new
+  cvt.def_rule(:block) { 0 }
+  cvt.def_rule(:int) { 1 }
+  cvt.def_fallback { 2 }
+
+  it "can handle defined rules" do
+    ast = Parser::CurrentRuby.parse("proc {}")
+    expect(cvt.convert(ast)).to eq 0
+    ast = Parser::CurrentRuby.parse("1")
+    expect(cvt.convert(ast)).to eq 1
+  end
+
+  it "can handle undefined rules by the fallback rule" do
+    ast = Parser::CurrentRuby.parse(":unk")
+    expect(cvt.convert(ast)).to be 2
   end
 end
