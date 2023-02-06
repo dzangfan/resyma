@@ -7,10 +7,6 @@ module Resyma
   module Core
     class EpsilonClass
       include Matchable
-
-      def identity_with_matchable?(other)
-        equal? other
-      end
     end
 
     Epsilon = EpsilonClass.new

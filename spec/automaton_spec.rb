@@ -8,10 +8,6 @@ class String
   def match_with_value?(other)
     self == other
   end
-
-  def identity_with_matchable?(other)
-    self == other
-  end
 end
 
 RSpec.describe Resyma::Core::Automaton do
