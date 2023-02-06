@@ -12,7 +12,7 @@ module Resyma
     # Parse tree with fields used by the matching algorithm
     #
     class ParseTree
-      attr_accessor :symbol, :children, :parent, :index, :field
+      attr_accessor :symbol, :children, :parent, :index, :field, :ast
 
       def initialize(symbol, children, parent, index, is_leaf)
         @symbol = symbol
@@ -21,13 +21,14 @@ module Resyma
         @index = index
         @field = Field.make_clean_field
         @is_leaf = is_leaf
+        @ast = nil
       end
 
-      def is_root?
+      def root?
         @parent.nil?
       end
 
-      def is_leaf?
+      def leaf?
         @is_leaf
       end
     end
