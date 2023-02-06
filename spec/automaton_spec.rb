@@ -73,12 +73,10 @@ RSpec.describe Resyma::Core::Epsilon do
     expect(d.has_epsilon?).to be false
   end
 
-  Utils = Resyma::Core::Utils
-
   it "denotes the same language with the non-epsilon version" do
     d = a.to_DFA
     try = proc do |sample, result|
-      expect(Utils.automaton_accept?(d, sample)).to be result
+      expect(Resyma::Core::Utils.automaton_accept?(d, sample)).to be result
     end
     try.call [], true
     try.call %w[a], true
@@ -92,7 +90,9 @@ RSpec.describe Resyma::Core::Regexp do
   include Resyma::Core::RegexpOp
 
   def try(regexp, input, result)
-    expect(Utils.automaton_accept?(regexp.to_automaton, input)).to be result
+    automaton = regexp.to_automaton
+    answer = Resyma::Core::Utils.automaton_accept?(automaton, input)
+    expect(answer).to be result
   end
 
   it "works with empty regexp" do
