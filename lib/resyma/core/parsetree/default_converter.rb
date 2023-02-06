@@ -12,7 +12,7 @@ Resyma::Core::DEFAULT_CONVERTER.instance_eval do
     Resyma::Core::ParseTree.new(type, [value], parent, index, true, ast)
   end
 
-  SIMPLE_LITERAL = %i[
+  simple_literal = %i[
     true
     false
     nil
@@ -20,13 +20,13 @@ Resyma::Core::DEFAULT_CONVERTER.instance_eval do
     rational
   ]
 
-  def_rule SIMPLE_LITERAL do |ast, parent, index|
+  def_rule simple_literal do |ast, parent, index|
     make_token ast.type, ast.loc.expression.source, parent, index, ast
   end
 
-  NUMBER_REGEX = /^\s*(\+|-)?\s*([0-9.]+)\s*$/
+  number_regexp = /^\s*(\+|-)?\s*([0-9.]+)\s*$/
   def_rule %i[int float] do |ast, parent, index|
-    m = NUMBER_REGEX.match(ast.loc.expression.source)
+    m = number_regexp.match(ast.loc.expression.source)
     if m.nil?
       raise Resyma::Core::ConversionError,
             "Internal error: Number pattern [#{ast.loc.expression}] is invalid"
@@ -37,18 +37,18 @@ Resyma::Core::DEFAULT_CONVERTER.instance_eval do
     end.build(parent)
   end
 
-  TOKEN_VALUE_TABLE = {
-    "(" => :round_left,
-    ")" => :round_right,
-    "begin" => :kwd_begin,
-    "end" => :kwd_end
-  }
-
   def check_boundary(boundary, pt_builder)
     return if boundary.nil?
 
+    token_value_table = {
+      "(" => :round_left,
+      ")" => :round_right,
+      "begin" => :kwd_begin,
+      "end" => :kwd_end
+    }
+
     value = boundary.source
-    type = TOKEN_VALUE_TABLE[value]
+    type = token_value_table[value]
     if type.nil?
       raise Resyma::Core::ConversionError,
             "Unknwon boundary-token of AST with type <begin>: #{value}"

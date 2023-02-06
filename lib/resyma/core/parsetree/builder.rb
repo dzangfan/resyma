@@ -79,8 +79,7 @@ module Resyma
         if block.nil?
           ParseTreeBuilder.new(symbol, index, true, [value], ast)
         else
-          ptb = ParseTreeBuilder.new(symbol, index, is_leaf = false,
-                                     children = [], ast = ast)
+          ptb = ParseTreeBuilder.new(symbol, index, false, [], ast)
           ptb.instance_eval(&block) unless block.nil?
           ptb
         end
