@@ -78,3 +78,106 @@ RSpec.describe Resyma::Core::Converter do
     expect(cvt.convert(ast)).to be 2
   end
 end
+
+RSpec.describe Resyma::Core::DEFAULT_CONVERTER do
+  def check_literal(str, type, value)
+    ast = Parser::CurrentRuby.parse(str)
+    pt = Resyma::Core::DEFAULT_CONVERTER.convert(ast)
+    expect(pt.symbol).to be type
+    expect(pt.children).to eq [value]
+    expect(pt.ast).to be_a Parser::AST::Node
+    expect(pt.field).to eq Resyma::Core::Field.make_clean_field
+    expect(pt.index).to eq 0
+    expect(pt.parent).to be_nil
+  end
+
+  it "can convert literals" do
+    check_literal("true", :true, "true")
+    check_literal("false", :false, "false")
+    check_literal("nil", :nil, "nil")
+    check_literal("1i", :complex, "1i")
+  end
+
+  def check_numeric(str, type, numop, numbase)
+    ast = Parser::CurrentRuby.parse(str)
+    pt = Resyma::Core::DEFAULT_CONVERTER.convert(ast)
+    expect(pt.ast).to be_a Parser::AST::Node
+    expect(pt.field).to eq Resyma::Core::Field.make_clean_field
+    expect(pt.index).to eq 0
+    expect(pt.parent).to be_nil
+    expect(pt.symbol).to be type
+    baseidx = if numop.nil?
+                expect(pt.children.size).to eq 1
+                0
+              else
+                expect(pt.children.size).to eq 2
+                oppt = pt.children[0]
+                expect(oppt.index).to eq 0
+                expect(oppt.parent).to be pt
+                expect(oppt.symbol).to be :numop
+                expect(oppt.children).to eq [numop]
+                1
+              end
+    basept = pt.children[baseidx]
+    expect(basept.index).to eq baseidx
+    expect(basept.parent).to be pt
+    expect(basept.symbol).to be :numbase
+    expect(basept.children).to eq [numbase]
+  end
+
+  it "can convert numerics" do
+    check_numeric("1", :int, nil, "1")
+    check_numeric("3.1", :float, nil, "3.1")
+    check_numeric("-10", :int, "-", "10")
+    check_numeric("  + 200", :int, "+", "200")
+    check_numeric("-0.0", :float, "-", "0.0")
+    check_numeric("+ 10.2", :float, "+", "10.2")
+  end
+
+  def quick_check(pt, type, value: nil, parent: nil, index: nil, is_leaf: nil)
+    expect(pt.symbol).to be type
+    expect(pt.children).to eq [value] unless value.nil?
+    expect(pt.parent).to be parent unless parent.nil?
+    expect(pt.index).to eq index unless index.nil?
+    expect(pt.leaf?).to eq is_leaf unless is_leaf.nil?
+  end
+
+  def check_begin_boundary(boundary, pt)
+    begin_token_table = {
+      round_left: "(",
+      round_right: ")",
+      kwd_begin: "begin",
+      kwd_end: "end"
+    }
+    type = boundary
+    value = begin_token_table[boundary]
+    quick_check(pt, type, value: value)
+  end
+
+  def check_begin(str, size, left, right)
+    ast = Parser::CurrentRuby.parse(str)
+    pt = Resyma::Core::DEFAULT_CONVERTER.convert(ast)
+    expect(pt.ast).to be_a Parser::AST::Node
+    expect(pt.field).to eq Resyma::Core::Field.make_clean_field
+    expect(pt.symbol).to be :begin
+    expect(pt.children.size).to eq size
+    check_begin_boundary left, pt.children.first unless left.nil?
+    check_begin_boundary right, pt.children.last unless right.nil?
+    pt
+  end
+
+  it "can convert begin-statements" do
+    check_begin("()", 2, :round_left, :round_right)
+    pt = check_begin("(1)", 3, :round_left, :round_right)
+    quick_check pt.children[1], :int, index: 1
+    pt = check_begin <<-EOF, 5, :kwd_begin, :kwd_end
+      begin
+        nil
+        false; 0.0
+      end
+    EOF
+    quick_check pt.children[1], :nil, is_leaf: true, value: "nil", index: 1
+    quick_check pt.children[2], :false, is_leaf: true, value: "false", index: 2
+    quick_check pt.children[3], :float, index: 3
+  end
+end

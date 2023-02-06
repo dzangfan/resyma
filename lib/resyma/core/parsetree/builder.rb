@@ -2,9 +2,11 @@ require "resyma/core/parsetree/definition"
 
 module Resyma
   module Core
-    def ParseTree.build(parent = nil)
-      @parent = parent
-      self
+    class ParseTree
+      def build(parent = nil)
+        @parent = parent
+        self
+      end
     end
 
     #
