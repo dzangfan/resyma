@@ -2,7 +2,9 @@
 
 require_relative "resyma/version"
 
+#
+# Interfaces of Resyma services
+#
 module Resyma
   class Error < StandardError; end
-  # Your code goes here...
 end
