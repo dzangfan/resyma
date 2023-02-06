@@ -25,7 +25,7 @@ end
 RSpec.describe Resyma::Core::ParseTreeBuilder do
   def check(node, symbol, children_amount, index, parent, is_leaf)
     expect(node).to be_a Resyma::Core::ParseTree
-    expect(node.field).to eq Resyma::Core::Field.make_clean_field
+    expect(node.field.id).to eq(-1)
     expect(node.children.length).to eq children_amount
     expect(node.index).to eq index
     expect(node.parent).to be parent
@@ -114,7 +114,7 @@ RSpec.describe Resyma::Core::DEFAULT_CONVERTER do
     expect(pt.symbol).to be type
     expect(pt.children).to eq [value]
     expect(pt.ast).to be_a Parser::AST::Node
-    expect(pt.field).to eq Resyma::Core::Field.make_clean_field
+    expect(pt.field.id).to eq(-1)
     expect(pt.index).to eq 0
     expect(pt.parent).to be_nil
   end
@@ -130,7 +130,7 @@ RSpec.describe Resyma::Core::DEFAULT_CONVERTER do
     ast = Parser::CurrentRuby.parse(str)
     pt = Resyma::Core::DEFAULT_CONVERTER.convert(ast)
     expect(pt.ast).to be_a Parser::AST::Node
-    expect(pt.field).to eq Resyma::Core::Field.make_clean_field
+    expect(pt.field.id).to eq(-1)
     expect(pt.index).to eq 0
     expect(pt.parent).to be_nil
     expect(pt.symbol).to be type
@@ -186,7 +186,7 @@ RSpec.describe Resyma::Core::DEFAULT_CONVERTER do
     ast = Parser::CurrentRuby.parse(str)
     pt = Resyma::Core::DEFAULT_CONVERTER.convert(ast)
     expect(pt.ast).to be_a Parser::AST::Node
-    expect(pt.field).to eq Resyma::Core::Field.make_clean_field
+    expect(pt.field.id).to eq(-1)
     expect(pt.symbol).to be :begin
     expect(pt.children.size).to eq size
     check_begin_boundary left, pt.children.first unless left.nil?
