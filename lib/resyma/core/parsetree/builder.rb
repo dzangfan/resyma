@@ -1,5 +1,15 @@
+require "resyma/core/parsetree/definition"
+
 module Resyma
   module Core
+    def ParseTree.build(parent = nil)
+      @parent = parent
+      self
+    end
+
+    #
+    # Builder of Resyma::Core::ParseTree
+    #
     class ParseTreeBuilder
       def initialize(symbol, index = 0, is_leaf = false,
                      children = [], ast = nil)
@@ -11,17 +21,36 @@ module Resyma
       end
 
       #
-      # Define a child node and return the new AST
+      # Define and add a node to current tree as a child
       #
-      # @param [Symbol] symbol Symbol of the child
+      # @param [Symbol] symbol Type of the node
+      # @param [Parser::AST::Node] ast Abstract syntax tree of the new node
+      # @param [true, false] is_leaf Is a leaf node?
+      # @param [Array] value Should only be used when `is_leaf`, meaning that
+      #   this node is a token node. Pass an array with a single value as the
+      #   value of the token
       #
-      # @return [Resyma::Core::ParseTreeBuilder] Builder of the new child
+      # @return [Resyma::Core::ParseTreeBuilder] The builder of the new node
       #
       def add_child!(symbol, ast = nil, is_leaf = false, value = [])
         ptb = ParseTreeBuilder.new(symbol, @children.length, is_leaf, value,
                                    ast)
         @children.push ptb
         ptb
+      end
+
+      #
+      # Add a node to current tree as a child
+      #
+      # @param [Resyma::Core::ParseTree] tree The new child
+      #
+      # @return [nil] Nothing
+      #
+      def add_parsetree_child!(tree, ast = nil)
+        tree.index = @children.length
+        tree.ast = ast
+        @children.push tree
+        nil
       end
 
       def build(parent = nil)
