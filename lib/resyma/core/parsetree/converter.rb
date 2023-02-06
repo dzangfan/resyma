@@ -42,12 +42,12 @@ module Resyma
       #
       # @return [Resyma::Core::ParseTree] A concrete syntax tree
       #
-      def convert(ast)
+      def convert(ast, parent = nil, index = 0)
         converter = @rules[ast.type]
         if !converter.nil?
-          converter.call(ast)
+          converter.call(ast, parent, index)
         elsif !@fallback.nil?
-          @fallback.call(ast)
+          @fallback.call(ast, parent, index)
         else
           raise Resyma::Core::ConversionError,
                 "Unable to convert AST whose type is #{ast.type}"

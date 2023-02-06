@@ -30,7 +30,7 @@ RSpec.describe Resyma::Core::ParseTreeBuilder do
     expect(node.index).to eq index
     expect(node.parent).to be parent
     expect(node.symbol).to be symbol
-    expect(node.is_leaf?).to be is_leaf
+    expect(node.leaf?).to be is_leaf
   end
 
   it "can build a tree with single node" do
