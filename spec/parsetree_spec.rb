@@ -60,6 +60,34 @@ RSpec.describe Resyma::Core::ParseTreeBuilder do
   end
 end
 
+RSpec.describe Resyma::Core::ParseTree do
+  it "can be traversed depth-firstly" do
+    t = Resyma::Core::ParseTreeBuilder.root(0) do
+      node 1 do
+        leaf(2, nil)
+        node 3 do
+          leaf(4, nil)
+          leaf(5, nil)
+        end
+      end
+      node 6 do
+        leaf(7, nil)
+        node 8 do
+          node 9 do
+            leaf(10, nil)
+          end
+        end
+        leaf(11, nil)
+      end
+    end.build
+    order = []
+    t.depth_first_each do |tree|
+      order.push tree.symbol
+    end
+    expect(order).to eq (0..11).to_a
+  end
+end
+
 RSpec.describe Resyma::Core::Converter do
   cvt = Resyma::Core::Converter.new
   cvt.def_rule(:block) { 0 }
