@@ -32,8 +32,22 @@ module Resyma
     # Parse tree with fields used by the matching algorithm
     #
     class ParseTree
-      attr_accessor :symbol, :children, :parent, :index, :field, :ast
+      attr_accessor :symbol, :children, :parent, :index, :field, :ast, :cache
 
+      #
+      # Create an instance of parse tree
+      #
+      # @param [Symbol] symbol Symbol associating to the node
+      # @param [Array] children Subtrees of current node, or an array with a
+      #   single element if it is a leaf
+      # @param [Resyma::Core::ParseTree, nil] parent Parent tree, or nil if the
+      #   current node is the root
+      # @param [Integer] index There are `index` brother preceding to the
+      #   current node
+      # @param [true,false] is_leaf Whether or not the current node is a leaf
+      # @param [Parser::AST::Node,nil] ast Its corresponding abstract syntax
+      #   tree
+      #
       def initialize(symbol, children, parent, index, is_leaf, ast = nil)
         @symbol = symbol
         @children = children
@@ -42,6 +56,7 @@ module Resyma
         @field = Field.clean_field
         @is_leaf = is_leaf
         @ast = ast
+        @cache = {}
       end
 
       def root?
