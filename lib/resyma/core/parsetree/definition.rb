@@ -59,6 +59,12 @@ module Resyma
         @cache = {}
       end
 
+      def clear!
+        @field = Field.clean_field
+        @cache = {}
+        @children.each(&:clear!) unless leaf?
+      end
+
       def root?
         @parent.nil?
       end
