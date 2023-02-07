@@ -73,6 +73,25 @@ RSpec.describe Resyma::Core::Epsilon do
     expect(d.has_epsilon?).to be false
   end
 
+  it "handles DFA containing common prefix properly" do
+    ab = Resyma::Core::AutomatonBuilder.new
+    states = (0...7).map { ab.new_state! }
+    ab.start! states[0]
+    ab.accept! states[6]
+    ab.accept! states[5]
+    ab.add_transition!(states[0], Resyma::Core::Epsilon, states[1])
+    ab.add_transition!(states[0], Resyma::Core::Epsilon, states[2])
+    ab.add_transition!(states[1], "a", states[3])
+    ab.add_transition!(states[2], "a", states[4])
+    ab.add_transition!(states[4], "b", states[5])
+    ab.add_transition!(states[3], "c", states[6])
+    d = ab.build.to_DFA
+    expect(Resyma::Core::Utils.automaton_accept?(d, %w[a c])).to be true
+    expect(Resyma::Core::Utils.automaton_accept?(d, %w[a b])).to be true
+    expect(Resyma::Core::Utils.automaton_accept?(d, %w[a])).to be false
+    expect(Resyma::Core::Utils.automaton_accept?(d, %w[])).to be false
+  end
+
   it "denotes the same language with the non-epsilon version" do
     d = a.to_DFA
     try = proc do |sample, result|
