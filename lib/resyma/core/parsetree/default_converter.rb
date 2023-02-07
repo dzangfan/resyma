@@ -4,6 +4,13 @@ require "resyma/core/parsetree/converter"
 module Resyma
   module Core
     DEFAULT_CONVERTER = Converter.new
+
+    CONST_TOKEN_TABLE = {
+      "(" => :round_left,
+      ")" => :round_right,
+      "begin" => :kwd_begin,
+      "end" => :kwd_end
+    }
   end
 end
 
@@ -40,15 +47,8 @@ Resyma::Core::DEFAULT_CONVERTER.instance_eval do
   def check_boundary(boundary, pt_builder)
     return if boundary.nil?
 
-    token_value_table = {
-      "(" => :round_left,
-      ")" => :round_right,
-      "begin" => :kwd_begin,
-      "end" => :kwd_end
-    }
-
     value = boundary.source
-    type = token_value_table[value]
+    type = Resyma::Core::CONST_TOKEN_TABLE[value]
     if type.nil?
       raise Resyma::Core::ConversionError,
             "Unknwon boundary-token of AST with type <begin>: #{value}"
