@@ -25,9 +25,15 @@ module Resyma
       # @return [true, false] Result
       #
       def match_with_value?(parsetree)
-        parsetree.symbol == @type &&
-          (@value.nil? || (parsetree.leaf? &&
-                           parsetree.children[0] == @value))
+        if parsetree.is_a?(Resyma::Core::ParseTree)
+          parsetree.symbol == @type &&
+            (@value.nil? || (parsetree.leaf? &&
+                             parsetree.children[0] == @value))
+        elsif parsetree.is_a?(PTNodeMatcher)
+          self == parsetree
+        else
+          false
+        end
       end
     end
   end
