@@ -17,6 +17,14 @@ module Resyma
         @value = value
       end
 
+      attr_reader :type, :value
+
+      def ==(other)
+        other.is_a?(PTNodeMatcher) &&
+          other.type == @type &&
+          other.value == @value
+      end
+
       #
       # Whether the matcher matches with the parse tree
       #

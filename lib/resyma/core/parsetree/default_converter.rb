@@ -9,7 +9,8 @@ module Resyma
       "(" => :round_left,
       ")" => :round_right,
       "begin" => :kwd_begin,
-      "end" => :kwd_end
+      "end" => :kwd_end,
+      "," => :comma
     }
   end
 end
@@ -19,16 +20,17 @@ Resyma::Core::DEFAULT_CONVERTER.instance_eval do
     Resyma::Core::ParseTree.new(type, [value], parent, index, true, ast)
   end
 
-  simple_literal = %i[
-    true
-    false
-    nil
-    complex
-    rational
-  ]
+  simple_literal = {
+    true: :the_true,
+    false: :the_false,
+    nil: :the_nil,
+    complex: :complex,
+    rational: :rational
+  }
 
-  def_rule simple_literal do |ast, parent, index|
-    make_token ast.type, ast.loc.expression.source, parent, index, ast
+  def_rule simple_literal.keys do |ast, parent, index|
+    make_token simple_literal[ast.type], ast.loc.expression.source,
+               parent, index, ast
   end
 
   number_regexp = /^\s*(\+|-)?\s*([0-9.]+)\s*$/

@@ -17,3 +17,12 @@ Style/FrozenStringLiteralComment:
 
 Layout/EndOfLine:
   EnforcedStyle: lf
+
+Style/RedundantParentheses:
+  Enabled: false
+
+Style/Semicolon:
+  Enabled: false
+
+Lint/Void:
+  Enabled: false

@@ -49,6 +49,12 @@ module Resyma
         @regexp_list = regexp_list
       end
 
+      attr_reader :regexp_list
+
+      def ==(other)
+        other.is_a?(self.class) && other.regexp_list == @regexp_list
+      end
+
       def inject(ab, start_state)
         current_start = start_state
         @regexp_list.each do |regexp|
@@ -66,6 +72,12 @@ module Resyma
       #
       def initialize(regexp_list)
         @regexp_list = regexp_list
+      end
+
+      attr_reader :regexp_list
+
+      def ==(other)
+        other.is_a?(self.class) && other.regexp_list == @regexp_list
       end
 
       def inject(ab, start_state)
@@ -90,6 +102,12 @@ module Resyma
         @regexp = regexp
       end
 
+      attr_reader :regexp
+
+      def ==(other)
+        other.is_a?(self.class) && other.regexp == @regexp
+      end
+
       def inject(ab, start_state)
         accept = @regexp.inject(ab, start_state)
         ab.add_transition!(start_state, Epsilon, accept)
@@ -108,6 +126,12 @@ module Resyma
         @condition = matchable
       end
 
+      attr_reader :condition
+
+      def ==(other)
+        other.is_a?(self.class) && other.condition == @condition
+      end
+
       def inject(ab, start_state)
         accept = ab.new_state!
         ab.add_transition!(start_state, @condition, accept)
@@ -116,6 +140,11 @@ module Resyma
     end
 
     class RegexpNothing < Regexp
+
+      def ==(other)
+        other.is_a?(RegexpNothing)
+      end
+
       def inject(_ab, start_state)
         start_state
       end
