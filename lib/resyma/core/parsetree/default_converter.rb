@@ -26,7 +26,8 @@ module Resyma
       "&." => :and_dot,
       "do" => :kwd_do,
       "&" => :ampersand,
-      "|" => "tube"
+      "|" => "tube",
+      "=" => "eq"
     }.freeze
   end
 end
