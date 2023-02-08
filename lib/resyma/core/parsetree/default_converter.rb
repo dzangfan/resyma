@@ -21,9 +21,12 @@ module Resyma
       "}" => :curly_right,
       ".." => :dot2,
       "..." => :dot3,
-      "defined?" => :defined?,
+      "defined?" => :kwd_defined?,
       "." => :dot,
-      "&." => :and_dot
+      "&." => :and_dot,
+      "do" => :kwd_do,
+      "&" => :ampersand,
+      "|" => "tube"
     }.freeze
   end
 end
@@ -33,6 +36,10 @@ Resyma::Core::DEFAULT_CONVERTER.instance_eval do
 
   def make_token(type, value, parent, index, ast)
     Resyma::Core::ParseTree.new(type, [value], parent, index, true, ast)
+  end
+
+  def_fallback do |ast, parent, index|
+    make_token(:any, ast.type.to_s, parent, index, ast)
   end
 
   simple_literal = {
@@ -221,7 +228,7 @@ Resyma::Core::DEFAULT_CONVERTER.instance_eval do
   end
 
   def add_ast!(ptb, ast)
-    ptb.add_parsetree_child!(convert(ast), ast)
+    ptb.add_parsetree_child!(convert(ast), ast) unless ast.nil?
   end
 
   def_rule :casgn do |ast, parent, index|
@@ -254,5 +261,62 @@ Resyma::Core::DEFAULT_CONVERTER.instance_eval do
         add_ast! ptb, rhs
       end
     end
+  end
+
+  def_rule :block do |ast, parent, index|
+    with_ptb ast, parent, index do |ptb|
+      send, args, block = ast.children
+      add_ast! ptb, send
+      try_token! ptb, ast.loc.begin
+      add_ast! ptb, args
+      add_ast! ptb, block
+      try_token! ptb, ast.loc.end
+    end
+  end
+
+  def_rule :args do |ast, parent, index|
+    with_ptb ast, parent, index do |ptb|
+      try_token! ptb, ast.loc.begin
+      unless ast.children.empty?
+        add_ast! ptb, ast.children.first
+        ast.children[1..].each do |arg|
+          try_token! ptb, ","
+          add_ast! ptb, arg
+        end
+      end
+      try_token! ptb, ast.loc.end
+    end
+  end
+
+  def_rule :arg do |ast, parent, index|
+    with_ptb ast, parent, index do |ptb|
+      add_id! ptb, ast.loc.name.source
+    end
+  end
+
+  def_rule :optarg do |ast, parent, index|
+    with_ptb ast, parent, index do |ptb|
+      add_id! ptb, ast.loc.name.source
+      try_token! ptb, ast.loc.operator
+      add_ast! ptb, ast.children[1]
+    end
+  end
+
+  def def_rule_with_ptb(types)
+    def_rule types do |ast, parent, index|
+      with_ptb ast, parent, index do |ptb|
+        yield ptb, ast, parent, index
+      end
+    end
+  end
+
+  def_rule_with_ptb :restarg do |ptb, ast|
+    try_token! ptb, "*"
+    add_id! ptb, ast.loc.name.source unless ast.loc.name.nil?
+  end
+
+  def_rule_with_ptb :blockarg do |ptb, ast|
+    try_token! ptb, "&"
+    add_id! ptb, ast.loc.name.source unless ast.loc.name.nil?
   end
 end
