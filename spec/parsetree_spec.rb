@@ -120,9 +120,9 @@ RSpec.describe Resyma::Core::DEFAULT_CONVERTER do
   end
 
   it "can convert literals" do
-    check_literal("true", :true, "true")
-    check_literal("false", :false, "false")
-    check_literal("nil", :nil, "nil")
+    check_literal("true", :the_true, "true")
+    check_literal("false", :the_false, "false")
+    check_literal("nil", :the_nil, "nil")
     check_literal("1i", :complex, "1i")
   end
 
@@ -204,8 +204,9 @@ RSpec.describe Resyma::Core::DEFAULT_CONVERTER do
         false; 0.0
       end
     EOF
-    quick_check pt.children[1], :nil, is_leaf: true, value: "nil", index: 1
-    quick_check pt.children[2], :false, is_leaf: true, value: "false", index: 2
+    quick_check pt.children[1], :the_nil, is_leaf: true, value: "nil", index: 1
+    quick_check pt.children[2], :the_false, is_leaf: true, value: "false",
+                                            index: 2
     quick_check pt.children[3], :float, index: 3
   end
 end
