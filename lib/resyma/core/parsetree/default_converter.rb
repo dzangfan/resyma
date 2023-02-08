@@ -32,7 +32,6 @@ module Resyma
 end
 
 Resyma::Core::DEFAULT_CONVERTER.instance_eval do
-  ctt = Resyma::Core::CONST_TOKEN_TABLE
 
   def make_token(type, value, parent, index, ast)
     Resyma::Core::ParseTree.new(type, [value], parent, index, true, ast)
@@ -81,6 +80,7 @@ Resyma::Core::DEFAULT_CONVERTER.instance_eval do
   def check_boundary(boundary, pt_builder)
     return if boundary.nil?
 
+    ctt = Resyma::Core::CONST_TOKEN_TABLE
     value = boundary.source
     type = ctt[value]
     if type.nil?
@@ -109,6 +109,7 @@ Resyma::Core::DEFAULT_CONVERTER.instance_eval do
   end
 
   def def_rule_for_seq(type, open, sep, close)
+    ctt = Resyma::Core::CONST_TOKEN_TABLE
     def_rule type do |ast, parent, index|
       ptb = Resyma::Core::ParseTreeBuilder.new(ast.type, index, false, [], ast)
       ptb.add_child!(ctt[open], nil, true, [open]) unless open.nil?
@@ -130,6 +131,7 @@ Resyma::Core::DEFAULT_CONVERTER.instance_eval do
   def_rule_for_seq(:kwargs, nil, ",", nil)
 
   def_rule %i[splat kwsplat] do |ast, parent, index|
+    ctt = Resyma::Core::CONST_TOKEN_TABLE
     star = ast.loc.operator.source
     ptb = Resyma::Core::ParseTreeBuilder.new(ast.type, index, false, [], ast)
     ptb.add_child!(ctt[star], nil, true, [star])
@@ -139,6 +141,7 @@ Resyma::Core::DEFAULT_CONVERTER.instance_eval do
   end
 
   def_rule :pair do |ast, parent, index|
+    ctt = Resyma::Core::CONST_TOKEN_TABLE
     left, right = ast.children
     op_value = ast.loc.operator.source
     op_type = ctt[op_value]
@@ -154,6 +157,7 @@ Resyma::Core::DEFAULT_CONVERTER.instance_eval do
   end
 
   def_rule %i[erange irange] do |ast, parent, index|
+    ctt = Resyma::Core::CONST_TOKEN_TABLE
     ptb = Resyma::Core::ParseTreeBuilder.new(ast.type, index, false, [], ast)
     left, right = ast.children
     op_value = ast.loc.operator.source
@@ -164,6 +168,7 @@ Resyma::Core::DEFAULT_CONVERTER.instance_eval do
   end
 
   def_rule :const do |ast, parent, index|
+    ctt = Resyma::Core::CONST_TOKEN_TABLE
     scope, sym = ast.children
     maybe_colon = ast.loc.double_colon
     ptb = Resyma::Core::ParseTreeBuilder.new(:const, index, false, [], ast)
