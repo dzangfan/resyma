@@ -24,14 +24,17 @@ Gem::Specification.new do |spec|
       (f == __FILE__) || f.match(%r{\A(?:(?:bin|test|spec|features)/|\.(?:git|travis|circleci)|appveyor)})
     end
   end
-  spec.bindir = "exe"
-  spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
+  spec.bindir = "bin"
+  spec.executables = spec.files.grep(%r{\A#{spec.bindir}/}) do |f|
+    File.basename(f)
+  end
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"
 
   spec.add_dependency "parser", "~> 3.0"
+  spec.add_dependency "ruby-graphviz", "~> 1.2"
   spec.add_dependency "unparser", "~> 0.6"
 
   spec.add_development_dependency "rake", "~> 13.0"
