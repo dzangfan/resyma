@@ -19,6 +19,9 @@ module Resyma
       # @param [Symbol, Array<Symbol>] type_or_types Types
       # @param [Proc] &cvt Procedure taking a AST and returning a parse tree,
       #  i.e. Parser::AST::Node -> Resyma::Core::ParseTree
+      # @yieldparam [Parser::AST::Node]
+      # @yieldparam [Resyma::Core::ParseTree]
+      # @yieldparam [Integer]
       #
       # @return [nil] Nothing
       #

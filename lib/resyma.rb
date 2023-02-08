@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative "resyma/version"
-require_relative "resyma/language"
 
 #
 # Interfaces of Resyma services
@@ -9,3 +8,5 @@ require_relative "resyma/language"
 module Resyma
   class Error < StandardError; end
 end
+
+require_relative "resyma/language"
