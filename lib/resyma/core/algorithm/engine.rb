@@ -98,6 +98,20 @@ module Resyma
       CACHE_INDEX_TO_NODE = "ALGO_IDX_NODE_MAP".freeze
 
       #
+      # Find the parse tree through its ID
+      #
+      # @param [Resyma::Core::ParseTree] parsetree A parse tree processed by
+      #   `#traverse!`
+      # @param [Integer] id Depth-first ordered ID, based on 0
+      #
+      # @return [Resyma::Core::ParseTree, nil] Result, or nil if node with `id`
+      #   does not exist
+      #
+      def node_of(parsetree, id)
+        parsetree.cache[Engine::CACHE_INDEX_TO_NODE][id]
+      end
+
+      #
       # Traverse the parse tree once and modify fields for every nodes
       #
       # @param [Resyma::Core::ParseTree] parsetree A parse tree
