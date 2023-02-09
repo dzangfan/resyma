@@ -59,7 +59,7 @@ Note that this library is unstable and experimental. Several severe limitations 
 
 ## Define your DSL
 
-Define a new DSL by define a subclass of `Resyma::Language`.
+Define a new DSL by defining a subclass of `Resyma::Language`.
 
 ```ruby
 class MyLang << Resyma::Language
