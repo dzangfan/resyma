@@ -8,6 +8,6 @@ class LangRubymoji < Resyma::Language
   end
 end
 
-def rubymoji(&block)
+def rumoji(&block)
   LangRubymoji.load(&block)
 end
