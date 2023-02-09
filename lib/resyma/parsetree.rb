@@ -135,4 +135,21 @@ module Resyma
       eval(string, bd, filename, lino)
     end
   end
+
+  module Core
+    class ParseTree
+      #
+      # Evaluate current parse tree using default evaluator
+      #
+      # @param [Binding] bd Environment
+      # @param [String] filename Source location
+      # @param [Integer] lino Source location
+      #
+      # @return [Object] Evaluation result
+      #
+      def to_ruby(bd = binding, filename = "(resyma)", lino = 1)
+        Evaluator.new.evaluate(self, bd, filename, lino)
+      end
+    end
+  end
 end
