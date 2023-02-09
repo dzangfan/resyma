@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary = "A regular syntax matcher"
   spec.description = "A regular syntax matcher facilitate DSL's construction"
-  spec.homepage = "https://github.com/dzangfan"
+  spec.homepage = "https://github.com/dzangfan/resyma"
   spec.required_ruby_version = ">= 2.6.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
