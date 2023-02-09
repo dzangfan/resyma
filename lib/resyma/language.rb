@@ -197,6 +197,8 @@ module Resyma
       @engine = nil
     end
 
+    attr_reader :engine
+
     def syntax; end
 
     def build_language(procedure)

@@ -26,8 +26,11 @@ module Resyma
       "&." => :and_dot,
       "do" => :kwd_do,
       "&" => :ampersand,
-      "|" => "tube",
-      "=" => "eq"
+      "|" => :tube,
+      "=" => :eq,
+      "true" => :the_true,
+      "false" => :the_false,
+      "nil" => :the_nil
     }.freeze
   end
 end
@@ -180,7 +183,7 @@ Resyma::Core::DEFAULT_CONVERTER.instance_eval do
       op_value = maybe_colon.source
       ptb.add_child!(ctt[op_value], nil, true, [op_value])
     end
-    ptb.add_child!(:id, nil, true, [sym])
+    ptb.add_child!(:id, nil, true, [sym.to_s])
     ptb.build(parent)
   end
 

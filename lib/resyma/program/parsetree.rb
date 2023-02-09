@@ -18,10 +18,18 @@ class Visualizer
     end
   end
 
+  def label_of(parsetree)
+    label = parsetree.symbol
+    if parsetree.leaf?
+      "#{label}(#{shorten(parsetree.children.first)})"
+    else
+      label
+    end
+  end
+
   def def_node(parsetree)
     @id_pool += 1
-    label = parsetree.symbol
-    label = "#{label}(#{shorten(parsetree.children.first)})" if parsetree.leaf?
+    label = label_of(parsetree)
     @viz.add_node(@id_pool.to_s, label: label)
   end
 
@@ -56,7 +64,7 @@ def launch
       puts opts
       exit
     end
-  end.parse
+  end.parse!
 
   source = $stdin.read
   ast = Parser::CurrentRuby.parse(source)

@@ -1,5 +1,7 @@
 require "date"
 require "resyma/nise/date"
+require "resyma/nise/toml"
+require "resyma/nise/rubymoji"
 
 RSpec.describe LangDate do
   it "reads literal 'today'" do
@@ -52,5 +54,65 @@ RSpec.describe LangTimeline do
       [Date.today.next_day(7), "Test #2"],
       [Date.today.next_month(2), "Final project due"]
     ]
+  end
+end
+
+RSpec.describe LangTOML do
+  it "builds simple TOML" do
+    toml = LangTOML.load do
+
+      # This is a nise-TOML document
+
+      title = "TOML Example"
+
+      [owner]
+      name = "Tom Preston-Werner"
+
+      [database]
+      enabled = true
+      ports = [ 8000, 8001, 8002 ]
+      data = [ ["delta", "phi"], [3.14] ]
+      temp_targets = { cpu: 79.5, case: 72.0 }
+
+      [servers]
+
+      [servers.alpha]
+      ip = "10.0.0.1"
+      role = "frontend"
+
+      [servers.beta]
+      ip = "10.0.0.2"
+      role = "backend"
+    end
+    expect(toml).to eq({
+      title: "TOML Example",
+      owner: {
+        name: "Tom Preston-Werner"
+      },
+      database: {
+        enabled: true,
+        ports: [8000, 8001, 8002],
+        data: [["delta", "phi"], [3.14]],
+        temp_targets: { cpu: 79.5, case: 72.0 }
+      },
+      servers: {
+        alpha: {
+          ip: "10.0.0.1",
+          role: "frontend"
+        },
+        beta: {
+          ip: "10.0.0.2",
+          role: "backend"
+        }
+      }
+    })
+  end
+end
+
+RSpec.describe LangRubymoji do
+  it "works" do
+    expect(rubymoji { o^o }).to eq "🙃"
+    expect(rubymoji { O.O ?? }).to eq "🤔"
+    expect(rubymoji { Zzz.. (x.x) }).to eq "😴"
   end
 end
