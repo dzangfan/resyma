@@ -150,6 +150,14 @@ module Resyma
       def to_ruby(bd = binding, filename = "(resyma)", lino = 1)
         Evaluator.new.evaluate(self, bd, filename, lino)
       end
+
+      def to_literal
+        unless leaf?
+          raise TypeError,
+                "Cannot convert a non-leaf node(i.e. non-token) to literal"
+        end
+        children.first
+      end
     end
   end
 end
