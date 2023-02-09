@@ -26,3 +26,6 @@ Style/Semicolon:
 
 Lint/Void:
   Enabled: false
+
+Layout/SpaceAroundOperators:
+  Enabled: false
