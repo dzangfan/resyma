@@ -57,7 +57,23 @@ date { -3.month } #=> #<Date: 2022-11-09 (...)>
 
 Note that this library is unstable and experimental. Several severe limitations will be described in following sections.
 
+## Installation
+
+By [Rubygem](https://rubygems.org/gems/resyma):
+
+```shell
+$ gem install resyma
+```
+
+Or by bundle:
+
+```ruby
+gem 'resyma', '~> 0.1.2'
+```
+
 ## Define your DSL
+
+**NOTE**: Code using this library should be placed and executed in `.rb` source file, meaning that you cannot try it in REPL like `irb`.
 
 Define a new DSL by defining a subclass of `Resyma::Language`.
 
