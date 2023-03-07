@@ -99,8 +99,10 @@ Comprehensive document is in the plan.
 ## Limitations
 
 - Parse tree, not AST
+
   Our algorithm works on parse trees, namely concrete syntax trees, but not AST. However, most of Ruby libraries function only at the AST level. Currently, we derive AST by [parser](https://github.com/whitequark/parser) and convert it to parse tree. It is an unacceptable solution because AST of `parser` describes abstract structures of codes and disregards details like parenthesis or semicolons, which in turn causes malfunction of our algorithm.
 - Capturing group
+
   In regular expression of string, we capture key components by grouping (e.g., `/Hi, (\w+)!/`) for further processing. Without this feature, regular expression is just a boolean function and almost useless. Currently, `Resyma` does not support capturing group, but we can provide users with a complete list of nodes matched with the regular expression. So users can process matched nodes but cannot choose specific nodes.
 
 ## More examples
